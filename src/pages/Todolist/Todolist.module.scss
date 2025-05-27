@@ -1,0 +1,11 @@
+.todolist {
+  &_boards {
+    display: flex;
+    justify-content: space-around;
+    &_panel {
+      width: 30%;
+      padding: 1rem;
+      border: 1px solid black;
+    }
+  }
+}
