@@ -1,12 +1,15 @@
-import { useEffect, useId, useState, type FormEvent } from "react";
+import { useId, useState, type FormEvent } from "react";
 import styles from "./Todolist.module.scss";
-import Modal from "../../assets/Modal";
+import CountdownTimer from "../../components/CountdownTimer";
+import ModalAddTask from "./ModalAddTask";
 
 type BoardType = "Todo" | "Doing" | "Done";
+
 type User = {
   id: string;
   name: string;
 };
+
 type TaskType = {
   id: string;
   title: string;
@@ -45,8 +48,6 @@ const ToDoList = () => {
     setModalAddtask(false);
   };
 
-  console.log(task);
-
   const handleDeleteTask = (id: string) => {
     setTask((prev) => prev.filter((task) => task.id !== id));
   };
@@ -62,6 +63,7 @@ const ToDoList = () => {
   return (
     <div className={styles.todolist}>
       ToDoList
+      <button onClick={() => setModalAddtask(true)}>Add Task</button>
       <div className={styles.todolist_boards}>
         {boards.map((board) => (
           <div
@@ -73,7 +75,7 @@ const ToDoList = () => {
               handleDrop(taskId, board);
             }}
           >
-            <h2>{board}</h2>
+            <h2 className={styles.todolist_boards_panel_title}>{board}</h2>
             {task
               .filter((task) => task.board === board)
               .map((task) => (
@@ -83,67 +85,35 @@ const ToDoList = () => {
                   onDragStart={(e) =>
                     e.dataTransfer.setData("text/plain", task.id)
                   }
-                  style={{
-                    margin: "0.5rem 0",
-                    padding: "0.5rem",
-                    backgroundColor: "#f0f0f0",
-                  }}
+                  className={styles.todolist_boards_panel_task}
                 >
-                  <strong>{task.title}</strong>
+                  <div>
+                    <strong>{task.title}</strong>
+                    <button onClick={() => handleDeleteTask(task.id)}>
+                      <i className="bx  bx-trash" />
+                    </button>
+                  </div>
                   <p>{task.description}</p>
                   <p>Assignee: {users[parseInt(task.assignee) - 1].name}</p>
                   <CountdownTimer
                     startTime={task.createdAt}
                     duration={task.duration}
                   />
-                  <button onClick={() => handleDeleteTask(task.id)}>
-                    Delete
-                  </button>
                 </div>
               ))}
           </div>
         ))}
-        <button onClick={() => setModalAddtask(true)}>Add Task</button>
+
         {modalAddtask && (
-          <Modal onClose={() => setModalAddtask(false)}>
-            <form onSubmit={handleSubmit}>
-              <h3>Create Task</h3>
-              <input name="title" type="text" />
-              <input name="description" type="text" />
-              <select name="assignee">
-                {users.map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name}
-                  </option>
-                ))}
-              </select>
-              <input name="duration" type="number" />
-              <button type="submit">Submit Task</button>
-            </form>
-          </Modal>
+          <ModalAddTask
+            users={users}
+            setModalAddtask={setModalAddtask}
+            handleSubmit={handleSubmit}
+          />
         )}
       </div>
     </div>
   );
-};
-
-const CountdownTimer: React.FC<{ startTime: number; duration: number }> = ({
-  startTime,
-  duration,
-}) => {
-  const [timeLeft, setTimeLeft] = useState(duration);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      const remaining = duration - elapsed;
-      setTimeLeft(remaining > 0 ? remaining : 0);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [startTime, duration]);
-
-  return <div>⏳ {timeLeft}s left</div>;
 };
 
 export default ToDoList;

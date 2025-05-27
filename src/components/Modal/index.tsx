@@ -23,7 +23,7 @@ const Modal = (props: PropType) => {
   }, [onClose]);
   return (
     <div className={styles.modal}>
-      <div className={styles.modal__main} ref={ref}>
+      <div className={styles.modal_main} ref={ref}>
         {children}
       </div>
     </div>
