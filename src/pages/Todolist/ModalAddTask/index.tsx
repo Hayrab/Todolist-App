@@ -1,5 +1,6 @@
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 import Modal from "../../../components/Modal";
+import styles from "./ModalAddTask.module.scss";
 
 type User = {
   id: string;
@@ -16,8 +17,14 @@ const ModalAddTask = (props: PropType) => {
   const { handleSubmit, setModalAddtask, users } = props;
   return (
     <Modal onClose={() => setModalAddtask(false)}>
-      <form onSubmit={handleSubmit}>
+      <div className={styles.modaladdtask_header}>
         <h3>Create Task</h3>
+        <i
+          onClick={() => setModalAddtask(false)}
+          className={`${styles.modaladdtask_header_closebtn} bx  bx-x`}
+        ></i>
+      </div>
+      <form onSubmit={handleSubmit} className={styles.modaladdtask_body}>
         <div>
           <label htmlFor="title">Title</label>
           <input
@@ -54,7 +61,14 @@ const ModalAddTask = (props: PropType) => {
             placeholder="Input Task Duration Here..."
           />
         </div>
-        <button type="submit">Submit Task</button>
+        <div className={styles.modaladdtask_footer}>
+          <button
+            className={styles.modaladdtask_footer_submitbtn}
+            type="submit"
+          >
+            Submit Task
+          </button>
+        </div>
       </form>
     </Modal>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import styles from "./CountdownTimer.module.scss";
 
 const CountdownTimer: React.FC<{ startTime: number; duration: number }> = ({
   startTime,
@@ -16,19 +17,23 @@ const CountdownTimer: React.FC<{ startTime: number; duration: number }> = ({
     return () => clearInterval(interval);
   }, [startTime, duration]);
 
-  return <div>⏳ {timeLeft}s left</div>;
+  const total_minutes = Math.floor(timeLeft / 60);
+  const total_hours = Math.floor(total_minutes / 60);
+  const days = Math.floor(total_hours / 24);
+
+  const seconds = timeLeft % 60;
+  const minutes = total_minutes % 60;
+  const hours = total_hours % 60;
+
+  return (
+    <div className={styles.countdowntimer}>
+      <i className={`${styles.countdowntimer_icon} bx  bx-clock-2`} />
+      {days > 0 && <span>{String(days).padStart(2, "0")} d&nbsp;</span>}
+      {hours > 0 && <span>{String(hours).padStart(2, "0")} h&nbsp; </span>}
+      {minutes > 0 && <span>{String(minutes).padStart(2, "0")} m&nbsp; </span>}
+      <span>{String(seconds).padStart(2, "0")} s left</span>
+    </div>
+  );
 };
-// const getFormattedTime = (miliseconds: number) => {
-//   const total_seconds = parseInt(Math.floor(miliseconds / 1000));
-//   const total_minutes = parseInt(Math.floor(total_seconds / 60));
-//   const total_hours = parseInt(Math.floor(total_minutes / 60));
-//   const days = parseInt(Math.floor(total_hours/ 24))
-
-//   const seconds = parseInt(total_seconds%60);
-//   const minutes = parseInt(total_minutes % 60);
-//   const hours = parseInt(total_hours % 60);
-
-//   return `${days} : ${hours} : ${minutes} : ${seconds}`;
-// }
 
 export default CountdownTimer;
