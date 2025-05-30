@@ -3,6 +3,7 @@ import styles from "./Todolist.module.scss";
 import CountdownTimer from "../../components/CountdownTimer";
 import ModalAddTask from "./ModalAddTask";
 import DropArea from "../../components/DropArea";
+import ModalDetailTask from "./ModalDetailTask";
 
 type BoardType = "Todo" | "Doing" | "Done";
 
@@ -32,8 +33,11 @@ const users: User[] = [
 const ToDoList = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [modalAddtask, setModalAddtask] = useState<boolean>(false);
+  const [detailTask, setDetailTask] = useState<TaskType | null>(null);
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+
+  console.log("task di todolis:", tasks);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -69,6 +73,14 @@ const ToDoList = () => {
     setTasks(updatedTasks);
   };
 
+  const handleDropOnBoard = (taskId: string, newBoard: BoardType) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === taskId ? { ...task, board: newBoard } : task
+      )
+    );
+  };
+
   return (
     <div className={styles.todolist}>
       <div className={styles.todolist_headpanel}>
@@ -86,6 +98,10 @@ const ToDoList = () => {
             className={styles.todolist_boards_panel}
             key={board}
             onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              const taskId = e.dataTransfer.getData("text/plain");
+              handleDropOnBoard(taskId, board as BoardType);
+            }}
           >
             <h2 className={styles.todolist_boards_panel_title}>{board}</h2>
 
@@ -101,8 +117,10 @@ const ToDoList = () => {
               .map((task, index) => (
                 <Fragment key={task.id}>
                   <div
+                    onClick={() => setDetailTask(task)}
                     draggable
-                    onDragStart={() => {
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData("text/plain", task.id);
                       setActiveCardId(task.id);
                       setActiveCard(index);
                     }}
@@ -153,6 +171,14 @@ const ToDoList = () => {
             users={users}
             setModalAddtask={setModalAddtask}
             handleSubmit={handleSubmit}
+          />
+        )}
+        {detailTask && (
+          <ModalDetailTask
+            tasks={detailTask}
+            setDetailTask={setDetailTask}
+            handleSubmit={handleSubmit}
+            users={users}
           />
         )}
       </div>
