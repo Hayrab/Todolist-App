@@ -7,6 +7,10 @@ const CountdownTimer: React.FC<{ startTime: number; duration: number }> = ({
 }) => {
   const [timeLeft, setTimeLeft] = useState(duration);
 
+  const doubledigit = (remaining: number) => {
+    return String(remaining).padStart(2, "0");
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -28,10 +32,10 @@ const CountdownTimer: React.FC<{ startTime: number; duration: number }> = ({
   return (
     <div className={styles.countdowntimer}>
       <i className={`${styles.countdowntimer_icon} bx  bx-clock-2`} />
-      {days > 0 && <span>{String(days).padStart(2, "0")} d&nbsp;</span>}
-      {hours > 0 && <span>{String(hours).padStart(2, "0")} h&nbsp; </span>}
-      {minutes > 0 && <span>{String(minutes).padStart(2, "0")} m&nbsp; </span>}
-      <span>{String(seconds).padStart(2, "0")} s left</span>
+      {days > 0 && <span>{doubledigit(days)} d&nbsp;</span>}
+      {hours > 0 && <span>{doubledigit(hours)} h&nbsp; </span>}
+      {minutes > 0 && <span>{doubledigit(minutes)} m&nbsp; </span>}
+      <span>{doubledigit(seconds)} s left</span>
     </div>
   );
 };

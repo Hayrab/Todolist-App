@@ -3,21 +3,13 @@ import styles from "./DropArea.module.scss";
 
 type PropsType = {
   onDrop: () => void;
-  activeCard: number | null;
-  index: number;
 };
 
 const DropArea = (props: PropsType) => {
-  const { onDrop, activeCard, index } = props;
+  const { onDrop } = props;
   const [showDrop, setShowDrop] = useState<boolean>(false);
 
-  const dragValidation = () => {
-    if (activeCard === index) return false;
-    // if (index === 0 && index === activeCard) return false;
-    return true;
-  };
-
-  return dragValidation ? (
+  return (
     <div
       onDragEnter={() => setShowDrop(true)}
       onDragLeave={() => setShowDrop(false)}
@@ -30,7 +22,7 @@ const DropArea = (props: PropsType) => {
     >
       Drop Here...
     </div>
-  ) : null;
+  );
 };
 
 export default DropArea;

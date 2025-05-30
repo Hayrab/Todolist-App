@@ -34,6 +34,7 @@ const ToDoList = () => {
   const [modalAddtask, setModalAddtask] = useState<boolean>(false);
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -56,9 +57,7 @@ const ToDoList = () => {
   };
 
   const onDrop = (board: BoardType, position: number) => {
-    console.log(
-      `${activeCard} is going to place into ${board} at position ${position}`
-    );
+    if (!activeCard) return;
     if (!activeCardId) return;
 
     const taskToMove = tasks.find((task) => task.id === activeCardId);
@@ -69,16 +68,6 @@ const ToDoList = () => {
 
     setTasks(updatedTasks);
   };
-
-  // const handleDrop = (taskId: string, newBoard: BoardType) => {
-  //   setTasks((prev) =>
-  //     prev.map((task) =>
-  //       task.id === taskId ? { ...task, board: newBoard } : task
-  //     )
-  //   );
-  // };
-
-  console.log(tasks);
 
   return (
     <div className={styles.todolist}>
@@ -97,10 +86,6 @@ const ToDoList = () => {
             className={styles.todolist_boards_panel}
             key={board}
             onDragOver={(e) => e.preventDefault()}
-            // onDrop={(e) => {
-            //   const taskId = e.dataTransfer.getData("text/plain");
-            //   handleDrop(taskId, board);
-            // }}
           >
             <h2 className={styles.todolist_boards_panel_title}>{board}</h2>
 
@@ -153,7 +138,6 @@ const ToDoList = () => {
 
                   <DropArea
                     onDrop={() => {
-                      console.log("index", index);
                       setActiveCard(null);
                       setActiveCardId(null);
                       onDrop(board, index + 1);
@@ -172,8 +156,6 @@ const ToDoList = () => {
           />
         )}
       </div>
-      {/* <h1>Active card {activeCard}</h1>
-      <h1>Active cardId {activeCardId}</h1> */}
     </div>
   );
 };
