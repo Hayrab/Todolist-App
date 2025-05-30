@@ -1,0 +1,232 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "To Do list",
+    "description": "OpenAPI for Todolist",
+    "version": "1.0",
+    "termsOfService": "https:://www,Todolist.com",
+    "contact": {
+      "name": "Hayrab",
+      "email": "narunhamiya@gmail.com",
+      "url": "https:://www.Todolist.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https:://{enviroment}.todolist.com/api/v1",
+      "description": "Todolist REST API Server",
+      "variables": {
+        "enviroment": {
+          "default": "dev",
+          "description": "Server enviroment",
+          "enum": ["dev", "qa", "prod"]
+        }
+      }
+    }
+  ],
+  "externalDocs": {
+    "description": "Github Hayrab",
+    "url": "https://github.com/Hayrab"
+  },
+  "paths": {
+    "/todolist": {
+      "get": {
+        "summary": "Get All Todolist",
+        "description": "Only will return Todo todolist, doing task or done todolist. Deleted todolist will be removed",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new task",
+        "description": "Create new task to database",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/todolist/{todolistId}": {
+      "put": {
+        "summary": "Update existing Todolist",
+        "description": "Updating existing todolist in database",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTask"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "todolistId",
+            "in": "path",
+            "required": true,
+            "description": "Todolist id for updated",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete existing Todolist",
+        "description": "Delete existing todolist in database",
+        "parameters": [
+          {
+            "name": "todolistId",
+            "in": "path",
+            "required": true,
+            "description": "Todolist id for deleted",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Task": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "assignee",
+          "duration",
+          "board"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "board": {
+            "type": "string",
+            "enum": ["Todo", "Doing", "Done"]
+          },
+          "duration": {
+            "type": "number"
+          }
+        }
+      },
+      "NewTask": {
+        "type": "object",
+        "required": ["title", "description", "assignee", "duration"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 5
+          },
+          "description": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "board": {
+            "type": "string",
+            "enum": ["Todo", "Doing", "Done"],
+            "default": "Todo"
+          },
+          "createdAt": {
+            "type": "number",
+            "description": "time Stamp"
+          }
+        }
+      },
+      "UpdateTask": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewTask"
+          },
+          {
+            "type": "object",
+            "required": []
+          }
+        ]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
